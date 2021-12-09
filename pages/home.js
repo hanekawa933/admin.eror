@@ -17,8 +17,9 @@ import Link from "next/link";
 import { useEffect, useContext, useState } from "react";
 import { TempContext } from "../context/TempContext";
 import instance from "../axios.default";
+import { ProtectedRoute } from "../HOC/withAuth";
 
-export default function Login() {
+function Home() {
   const [settings, setSettings] = useContext(TempContext);
 
   const fetchUserLogin = async () => {
@@ -45,3 +46,5 @@ export default function Login() {
     </div>
   );
 }
+
+export default ProtectedRoute(Home);

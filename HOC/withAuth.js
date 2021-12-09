@@ -7,7 +7,7 @@ export const ProtectedRoute = (WrapperComponent) => {
     static async getInitialProps(ctx) {
       const token = cookies(ctx)["token"];
       if (!token) {
-        const route = "/login";
+        const route = "/";
 
         if (ctx.res) {
           ctx.res.writeHead(302, { location: route });

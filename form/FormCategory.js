@@ -10,19 +10,18 @@ import {
   InputGroup,
   InputLeftAddon,
   InputRightAddon,
-  Select,
+  useToast,
 } from "@chakra-ui/react";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
 import instance from "../axios.default";
 
 const FormCategory = () => {
+  const toast = useToast();
   const logoRef = useRef();
-
   const handleReset = () => {
     logoRef.current.value = []; //THIS RESETS THE FILE FIELD
   };
-  const [create, setCreate] = useState([]);
 
   const Schema = Yup.object().shape({
     nama: Yup.string().required("Input tidak boleh kosong"),
@@ -37,10 +36,24 @@ const FormCategory = () => {
       },
     };
     try {
-      const result = await instance.post("/kategori", data, config);
-      setCreate(result.data.data);
+      await instance.post("/kategori", data, config);
+      toast({
+        title: "Berhasil",
+        description: "Data kategori berhasil ditambahkan",
+        status: "success",
+        duration: 2000,
+        position: "top",
+      });
     } catch (error) {
-      alert(error);
+      toast({
+        title: "Gagal",
+        description: error.response
+          ? error.response.data.message
+          : "Server Error",
+        status: "error",
+        duration: 2000,
+        position: "top",
+      });
     }
   };
 
@@ -51,13 +64,12 @@ const FormCategory = () => {
       icon: "",
     },
     validationSchema: Schema,
-    onSubmit: (values, { resetForm, setSubmitting }) => {
+    onSubmit: async (values, { resetForm, setSubmitting }) => {
       const formData = new FormData();
       formData.append("nama", values.nama);
       formData.append("kd_kategori", values.kd_kategori);
       formData.append("icon", values.icon);
-      createCategory(formData);
-      setSubmitting(false);
+      await createCategory(formData);
       resetForm({});
       handleReset();
     },
@@ -73,25 +85,6 @@ const FormCategory = () => {
     handleBlur,
     setFieldValue,
   } = formik;
-
-  const InputTypeText = (label) => {
-    return (
-      <FormControl
-        id={label}
-        pt="5"
-        isInvalid={Boolean(touched[label] && errors[label])}
-      >
-        <FormLabel textTransform="capitalize">{label}</FormLabel>
-        <Input
-          type="text"
-          name={label}
-          {...getFieldProps(label)}
-          onBlur={handleBlur}
-        />
-        <FormErrorMessage>{touched[label] && errors[label]}</FormErrorMessage>
-      </FormControl>
-    );
-  };
 
   const changedHandler = (event) => {
     setFieldValue("icon", event.currentTarget.files[0]);

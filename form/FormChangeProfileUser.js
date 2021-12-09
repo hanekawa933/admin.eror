@@ -80,9 +80,8 @@ const FormChangeProfileUser = ({ changed }) => {
       username: userLogin.username,
     },
     validationSchema: Schema,
-    onSubmit: async (values, { resetForm, setSubmitting }) => {
-      updateUserAccount(values);
-      setSubmitting(false);
+    onSubmit: async (values) => {
+      await updateUserAccount(values);
     },
     enableReinitialize: true,
   });

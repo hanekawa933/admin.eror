@@ -11,12 +11,14 @@ import {
   InputLeftAddon,
   InputRightAddon,
   Select,
+  useToast,
 } from "@chakra-ui/react";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
 import instance from "../axios.default";
 
 const FormUser = () => {
+  const toast = useToast();
   const [role, setRole] = useState([]);
   const Schema = Yup.object().shape({
     nama_lengkap: Yup.string().required("Input tidak boleh kosong"),
@@ -55,9 +57,21 @@ const FormUser = () => {
     };
     try {
       const result = await instance.post("/user", body, config);
+      toast({
+        title: "Berhasil",
+        description: "User berhasil dibuat.",
+        status: "success",
+        duration: 2000,
+        position: "top",
+      });
     } catch (error) {
-      alert(error);
-      console.log(error.response);
+      toast({
+        title: "Gagal",
+        description: error.response.data.message,
+        status: "error",
+        duration: 2000,
+        position: "top",
+      });
     }
   };
 
@@ -77,9 +91,8 @@ const FormUser = () => {
       role_id: "",
     },
     validationSchema: Schema,
-    onSubmit: (values, { resetForm, setSubmitting }) => {
-      createUser(values);
-      setSubmitting(false);
+    onSubmit: async (values, { resetForm }) => {
+      await createUser(values);
       resetForm({});
     },
     enableReinitialize: true,
@@ -179,7 +192,7 @@ const FormUser = () => {
               {...getFieldProps("jenis_kelamin")}
               onBlur={handleBlur}
             >
-              <option value="Laki-Laki">Laki-laki</option>
+              <option value="Laki-Laki">Laki-Laki</option>
               <option value="Perempuan">Perempuan</option>
             </Select>
             <FormErrorMessage>

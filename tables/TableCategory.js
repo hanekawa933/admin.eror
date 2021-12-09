@@ -27,6 +27,7 @@ import OptionButtonMenuTable from "../components/OptionButtonMenuTable";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider, Field } from "formik";
 import instance from "../axios.default";
+import path from "../constant.default";
 
 const TableCategory = () => {
   const [query, setQuery] = useState(``);
@@ -146,7 +147,7 @@ const TableCategory = () => {
       icon_category: (
         <Box
           as="object"
-          data={"http://localhost/eror_api" + result.icon}
+          data={path + result.icon}
           type="image/svg+xml"
           maxW="100%"
           height="36"

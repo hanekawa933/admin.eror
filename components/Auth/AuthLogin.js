@@ -76,13 +76,9 @@ const AuthLogin = () => {
       password: "",
     },
     validationSchema: Schema,
-    onSubmit: (values, { resetForm, setSubmitting, setFieldValue }) => {
-      login(values);
-      setTimeout(() => {
-        resetForm();
-        setFieldValue("username", values.username);
-        setSubmitting(false);
-      }, 2000);
+    onSubmit: async (values, { resetForm, setSubmitting, setFieldValue }) => {
+      await login(values);
+      setFieldValue("username", values.username);
     },
   });
 
@@ -102,7 +98,7 @@ const AuthLogin = () => {
           id="username"
           isInvalid={Boolean(touched.username && errors.username)}
         >
-          <FormLabel>username</FormLabel>
+          <FormLabel>Username</FormLabel>
           <Input
             type="text"
             name="username"

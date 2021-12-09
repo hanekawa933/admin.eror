@@ -6,18 +6,14 @@ import {
   Input,
   Button,
   FormErrorMessage,
+  useToast,
 } from "@chakra-ui/react";
 import * as Yup from "yup";
 import { useFormik, Form, FormikProvider } from "formik";
 import instance from "../axios.default";
 
 const FormFaq = () => {
-  const logoRef = useRef();
-
-  const handleReset = () => {
-    logoRef.current.value = []; //THIS RESETS THE FILE FIELD
-  };
-  const [create, setCreate] = useState([]);
+  const toast = useToast();
 
   const Schema = Yup.object().shape({
     pertanyaan: Yup.string().required("Input tidak boleh kosong"),
@@ -32,9 +28,21 @@ const FormFaq = () => {
     };
     try {
       const result = await instance.post("/faq", data, config);
-      setCreate(result.data.data);
+      toast({
+        title: "Berhasil",
+        description: "FAQ berhasil dibuat.",
+        status: "success",
+        duration: 2000,
+        position: "top",
+      });
     } catch (error) {
-      alert(error);
+      toast({
+        title: "Gagal",
+        description: error.response.data.message,
+        status: "error",
+        duration: 2000,
+        position: "top",
+      });
     }
   };
 
@@ -44,9 +52,8 @@ const FormFaq = () => {
       jawaban: "",
     },
     validationSchema: Schema,
-    onSubmit: (values, { resetForm, setSubmitting }) => {
-      createCategory(values);
-      setSubmitting(false);
+    onSubmit: async (values, { resetForm, setSubmitting }) => {
+      await createCategory(values);
       resetForm({});
       handleReset();
     },

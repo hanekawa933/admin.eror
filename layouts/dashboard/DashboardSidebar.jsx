@@ -3,7 +3,7 @@ import { TempContext } from "../../context/TempContext";
 import {
   Box,
   Flex,
-  Avatar,
+  Circle,
   Text,
   Heading,
   useColorMode,
@@ -27,11 +27,6 @@ const DashboardSidebar = () => {
   const toggleSidebar = () => {
     setSettings({ ...settings, active: !settings.active });
   };
-
-  const exp =
-    settings && settings.userLogin && parseInt(settings.userLogin.current_exp);
-
-  console.log(settings);
 
   return (
     <Box
@@ -79,7 +74,7 @@ const DashboardSidebar = () => {
       }}
       position="fixed"
       zIndex={999}
-      overflowY="hidden"
+      overflow="hidden"
       top="0"
       bottom="45px"
       css={{
@@ -166,7 +161,19 @@ const DashboardSidebar = () => {
         _groupHover={{ boxShadow: "xl", mx: "3", my: "7", py: "4" }}
         background={colorMode === "dark" ? "gray.900" : "gray.50"}
       >
-        <Avatar size="md" name="Avatar" src="/assets/img/photo_profile.png" />
+        <Circle
+          bg="orange.500"
+          width="50px"
+          height="50px"
+          fontWeight="bold"
+          color="white"
+        >
+          {settings.userLogin &&
+            settings.userLogin.nama_lengkap &&
+            settings.userLogin.nama_lengkap
+              .split(" ")
+              .map((i) => i.charAt(0).toUpperCase())}
+        </Circle>
         <Box
           mx="3"
           display={[

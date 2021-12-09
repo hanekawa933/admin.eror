@@ -41,7 +41,11 @@ const FormChangePassword = () => {
         },
       };
       const body = JSON.stringify(values);
-      const result = await instance.put(`/user/update_password`, body, config);
+      const result = await instance.put(
+        `/SuperAdmin/update_password`,
+        body,
+        config
+      );
       toast({
         title: "Berhasil Update",
         description: "Password anda berhasil diubah!",
@@ -69,9 +73,8 @@ const FormChangePassword = () => {
       password_verify: "",
     },
     validationSchema: Schema,
-    onSubmit: async (values, { resetForm, setSubmitting }) => {
-      updateUserAccount(values);
-      setSubmitting(false);
+    onSubmit: async (values, { resetForm }) => {
+      await updateUserAccount(values);
       resetForm({});
     },
     enableReinitialize: true,

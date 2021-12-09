@@ -57,13 +57,19 @@ const ProfileApp = () => {
               <Box display="flex" justifyContent="center" alignItems="center">
                 <Circle
                   size="120px"
-                  bg="tomato"
+                  bg="orange.500"
                   color="white"
                   position="absolute"
                   mt="7"
                   boxShadow="lg"
                 >
-                  <Text fontSize="50px">MIR</Text>
+                  <Text fontSize="50px">
+                    {settings.userLogin &&
+                      settings.userLogin.nama_lengkap &&
+                      settings.userLogin.nama_lengkap
+                        .split(" ")
+                        .map((i) => i.charAt(0).toUpperCase())}
+                  </Text>
                 </Circle>
                 <Box
                   display="flex"
