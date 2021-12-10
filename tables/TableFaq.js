@@ -2,9 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import {
   Box,
   Button,
-  Heading,
   Text,
-  Badge,
   FormLabel,
   useDisclosure,
   FormControl,
@@ -17,8 +15,8 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Select,
   useColorMode,
+  useToast,
 } from "@chakra-ui/react";
 import DataTable from "react-data-table-component";
 import { darkTheme, lightTheme } from "../styles/tableTheme";
@@ -31,10 +29,12 @@ import * as Yup from "yup";
 import { useFormik, Form, FormikProvider, Field } from "formik";
 
 const TableFaq = () => {
+  const toast = useToast();
   const [filterText, setFilterText] = useState("");
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [ids, setIds] = useState("");
   const [faq, setFaq] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchFaq = async () => {
     try {
@@ -50,6 +50,17 @@ const TableFaq = () => {
   }, []);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const {
+    isOpen: isOpenDeleteModal,
+    onOpen: onOpenDeleteModal,
+    onClose: onCloseDeleteModal,
+  } = useDisclosure();
+
+  const openAndSetIdsDelete = (val) => {
+    onOpenDeleteModal();
+    setIds(val);
+  };
 
   const openAndSetIds = (val) => {
     onOpen();
@@ -165,7 +176,10 @@ const TableFaq = () => {
         </Box>
       ),
       option: (
-        <OptionButtonMenuTable setAndOpen={() => openAndSetIds(result.id)} />
+        <OptionButtonMenuTable
+          setAndOpen={() => openAndSetIds(result.id)}
+          setAndDelete={() => openAndSetIdsDelete(result.id)}
+        />
       ),
     };
   });
@@ -240,9 +254,69 @@ const TableFaq = () => {
     </Modal>
   );
 
+  const deleteData = async () => {
+    try {
+      const result = await instance.delete(`/faq/delete/id/${ids}`);
+      toast({
+        title: "Berhasil",
+        description: "Data berhasil dihapus.",
+        status: "success",
+        duration: 2000,
+        position: "top",
+      });
+      setIds("");
+      fetchFaq();
+      setLoading(false);
+      onCloseDeleteModal();
+    } catch (error) {
+      toast({
+        title: "Gagal",
+        description: error.response
+          ? error.response.data.message
+          : "Server Error",
+        status: "error",
+        duration: 2000,
+        position: "top",
+      });
+    }
+  };
+
+  const modalDelete = (
+    <Modal isOpen={isOpenDeleteModal} onClose={onCloseDeleteModal} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Delete Data</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>Apakah anda yakin ingin menghapus data ini?</ModalBody>
+
+        <ModalFooter>
+          <Button
+            colorScheme="green"
+            mr={3}
+            onClick={onCloseDeleteModal}
+            isLoading={loading}
+          >
+            Batal
+          </Button>
+          <Button
+            colorScheme="red"
+            onClick={() => {
+              setLoading(true);
+              deleteData();
+            }}
+            isLoading={loading}
+          >
+            Hapus
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+
   return (
     <Box>
       {modalEdit}
+      {modalDelete}
       <Box mt="5">
         <DataTable
           columns={columns}

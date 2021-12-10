@@ -9,11 +9,10 @@ import {
   TabPanels,
   Tab,
   TabPanel,
+  Avatar,
 } from "@chakra-ui/react";
 import DashboardLayout from "../layouts/dashboard";
 import Head from "next/head";
-import { useFormik, Form, FormikProvider } from "formik";
-import * as Yup from "yup";
 import instance from "../axios.default";
 import { useEffect, useState, useContext } from "react";
 import { TempContext } from "../context/TempContext";
@@ -55,22 +54,15 @@ const ProfileApp = () => {
               position="relative"
             >
               <Box display="flex" justifyContent="center" alignItems="center">
-                <Circle
-                  size="120px"
+                <Avatar
                   bg="orange.500"
                   color="white"
                   position="absolute"
                   mt="7"
                   boxShadow="lg"
-                >
-                  <Text fontSize="50px">
-                    {settings.userLogin &&
-                      settings.userLogin.nama_lengkap &&
-                      settings.userLogin.nama_lengkap
-                        .split(" ")
-                        .map((i) => i.charAt(0).toUpperCase())}
-                  </Text>
-                </Circle>
+                  name={settings.userLogin.nama_lengkap}
+                  size="2xl"
+                />
                 <Box
                   display="flex"
                   justifyContent="center"

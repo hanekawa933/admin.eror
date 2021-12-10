@@ -11,6 +11,7 @@ import {
   Button,
   Image,
   Tooltip,
+  Avatar,
 } from "@chakra-ui/react";
 import { Icon } from "@iconify/react";
 import Link from "next/link";
@@ -161,19 +162,14 @@ const DashboardSidebar = () => {
         _groupHover={{ boxShadow: "xl", mx: "3", my: "7", py: "4" }}
         background={colorMode === "dark" ? "gray.900" : "gray.50"}
       >
-        <Circle
+        <Avatar
           bg="orange.500"
           width="50px"
           height="50px"
           fontWeight="bold"
           color="white"
-        >
-          {settings.userLogin &&
-            settings.userLogin.nama_lengkap &&
-            settings.userLogin.nama_lengkap
-              .split(" ")
-              .map((i) => i.charAt(0).toUpperCase())}
-        </Circle>
+          name={settings.userLogin.nama_lengkap}
+        />
         <Box
           mx="3"
           display={[

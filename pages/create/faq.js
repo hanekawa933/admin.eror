@@ -5,8 +5,10 @@ import { Box, Heading } from "@chakra-ui/react";
 import { useEffect, useContext, useState } from "react";
 import { TempContext } from "../../context/TempContext";
 import instance from "../../axios.default";
+import { useRouter } from "next/router";
 
 export default function DashboardCreateFaq() {
+  const router = useRouter();
   const [settings, setSettings] = useContext(TempContext);
 
   const fetchUserLogin = async () => {
@@ -14,7 +16,7 @@ export default function DashboardCreateFaq() {
       const result = await instance.get("/SuperAdmin/profile");
       setSettings({ ...settings, userLogin: result.data.data });
     } catch (error) {
-      alert(error);
+      router.push("/");
     }
   };
 

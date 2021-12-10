@@ -18,6 +18,7 @@ import {
   ModalCloseButton,
   Select,
   useColorMode,
+  useToast,
 } from "@chakra-ui/react";
 import DataTable from "react-data-table-component";
 import { darkTheme, lightTheme } from "../styles/tableTheme";
@@ -33,6 +34,8 @@ const TableUserAccount = () => {
   const [resetPaginationToggle, setResetPaginationToggle] = useState(false);
   const [users, setUsers] = useState([]);
   const [ids, setIds] = useState("");
+  const [loading, setLoading] = useState(false);
+  const toast = useToast();
 
   const fetchUserData = async () => {
     try {
@@ -48,9 +51,19 @@ const TableUserAccount = () => {
   }, []);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenDeleteModal,
+    onOpen: onOpenDeleteModal,
+    onClose: onCloseDeleteModal,
+  } = useDisclosure();
 
   const openAndSetIds = (val) => {
     onOpen();
+    setIds(val);
+  };
+
+  const openAndSetIdsDelete = (val) => {
+    onOpenDeleteModal();
     setIds(val);
   };
 
@@ -158,7 +171,10 @@ const TableUserAccount = () => {
         </Box>
       ),
       option: (
-        <OptionButtonMenuTable setAndOpen={() => openAndSetIds(result.uId)} />
+        <OptionButtonMenuTable
+          setAndOpen={() => openAndSetIds(result.uId)}
+          setAndDelete={() => openAndSetIdsDelete(result.uId)}
+        />
       ),
     };
   });
@@ -342,9 +358,68 @@ const TableUserAccount = () => {
     </Modal>
   );
 
+  const deleteData = async () => {
+    try {
+      const result = await instance.delete(`/user/delete/id/${ids}`);
+      toast({
+        title: "Berhasil",
+        description: "Data berhasil dihapus.",
+        status: "success",
+        duration: 2000,
+        position: "top",
+      });
+      setIds("");
+      fetchUserData();
+      setLoading(false);
+      onCloseDeleteModal();
+    } catch (error) {
+      toast({
+        title: "Gagal",
+        description: error.response
+          ? error.response.data.message
+          : "Server Error",
+        status: "error",
+        duration: 2000,
+        position: "top",
+      });
+    }
+  };
+
+  const modalDelete = (
+    <Modal isOpen={isOpenDeleteModal} onClose={onCloseDeleteModal} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>Delete Data</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>Apakah anda yakin ingin menghapus data ini?</ModalBody>
+
+        <ModalFooter>
+          <Button
+            colorScheme="green"
+            mr={3}
+            onClick={onCloseDeleteModal}
+            isLoading={loading}
+          >
+            Batal
+          </Button>
+          <Button
+            colorScheme="red"
+            onClick={() => {
+              setLoading(true);
+              deleteData();
+            }}
+            isLoading={loading}
+          >
+            Hapus
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
   return (
     <Box>
       {modalEdit}
+      {modalDelete}
       <Box mt="5">
         <DataTable
           columns={columns}
