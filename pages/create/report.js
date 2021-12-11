@@ -5,7 +5,7 @@ import { Box, Heading } from "@chakra-ui/react";
 import { useEffect, useContext, useState } from "react";
 import { TempContext } from "../../context/TempContext";
 import instance from "../../axios.default";
-import { useRouter } from "router";
+import { useRouter } from "next/router";
 
 export default function DashboardCreateReport() {
   const router = useRouter();
