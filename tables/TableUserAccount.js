@@ -19,6 +19,7 @@ import {
   Select,
   useColorMode,
   useToast,
+  Skeleton,
 } from "@chakra-ui/react";
 import DataTable from "react-data-table-component";
 import { darkTheme, lightTheme } from "../styles/tableTheme";
@@ -35,15 +36,15 @@ const TableUserAccount = () => {
   const [users, setUsers] = useState([]);
   const [ids, setIds] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(false);
   const toast = useToast();
 
   const fetchUserData = async () => {
     try {
       const result = await instance.get("/user");
       setUsers(result.data.data);
-    } catch (error) {
-      alert(error);
-    }
+      setLoadingUser(true);
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -417,24 +418,26 @@ const TableUserAccount = () => {
     </Modal>
   );
   return (
-    <Box>
-      {modalEdit}
-      {modalDelete}
-      <Box mt="5">
-        <DataTable
-          columns={columns}
-          data={filteredItems}
-          pagination
-          paginationResetDefaultPage={resetPaginationToggle} // optionally, a hook to reset pagination to page 1
-          subHeader
-          subHeaderComponent={subHeaderComponentMemo}
-          persistTableHead
-          highlightOnHover
-          pointerOnHover
-          theme={useColorMode().colorMode === "dark" ? "dark" : "light"}
-        />
+    <Skeleton isLoaded={loadingUser}>
+      <Box>
+        {modalEdit}
+        {modalDelete}
+        <Box mt="5">
+          <DataTable
+            columns={columns}
+            data={filteredItems}
+            pagination
+            paginationResetDefaultPage={resetPaginationToggle} // optionally, a hook to reset pagination to page 1
+            subHeader
+            subHeaderComponent={subHeaderComponentMemo}
+            persistTableHead
+            highlightOnHover
+            pointerOnHover
+            theme={useColorMode().colorMode === "dark" ? "dark" : "light"}
+          />
+        </Box>
       </Box>
-    </Box>
+    </Skeleton>
   );
 };
 

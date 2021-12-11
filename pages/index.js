@@ -10,8 +10,9 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import AuthLogin from "../components/Auth/AuthLogin";
+import { ProtectedRoute } from "../HOC/checkAuth";
 
-export default function Login() {
+function Login() {
   return (
     <div>
       <Head>
@@ -123,3 +124,5 @@ export default function Login() {
     </div>
   );
 }
+
+export default ProtectedRoute(Login);

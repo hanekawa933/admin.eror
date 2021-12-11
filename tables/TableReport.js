@@ -20,6 +20,7 @@ import {
   Select,
   useColorMode,
   useToast,
+  Skeleton,
 } from "@chakra-ui/react";
 import DataTable from "react-data-table-component";
 import { darkTheme, lightTheme } from "../styles/tableTheme";
@@ -39,6 +40,7 @@ const TableUserAccount = () => {
   const [user, setUser] = useState([]);
   const [category, setCategory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingReport, setLoadingReport] = useState(false);
   const toast = useToast();
 
   const fetchReportUserAndCategory = async () => {
@@ -49,12 +51,11 @@ const TableUserAccount = () => {
       setReports(result.data.data);
       setUser(users.data.data);
       setCategory(category.data.data);
+      setLoadingReport(true);
     } catch (error) {
       alert(error);
     }
   };
-
-  console.log(reports);
 
   useEffect(() => {
     fetchReportUserAndCategory();
@@ -100,10 +101,6 @@ const TableUserAccount = () => {
       kategori_id: result.kategori_id,
     });
   });
-
-  console.log(initValues);
-
-  console.log(dataFiltered);
 
   const updateReport = (ids, values) => {
     try {
@@ -648,26 +645,28 @@ const TableUserAccount = () => {
   );
 
   return (
-    <Box>
-      {modalEdit}
-      {modalDelete}
-      <Box mt="5">
-        <DataTable
-          columns={columns}
-          data={filteredItems}
-          pagination
-          paginationResetDefaultPage={resetPaginationToggle} // optionally, a hook to reset pagination to page 1
-          subHeader
-          subHeaderComponent={subHeaderComponentMemo}
-          persistTableHead
-          highlightOnHover
-          pointerOnHover
-          theme={useColorMode().colorMode === "dark" ? "dark" : "light"}
-          expandableRows
-          expandableRowsComponent={ExpandedComponent}
-        />
+    <Skeleton isLoaded={loadingReport}>
+      <Box>
+        {modalEdit}
+        {modalDelete}
+        <Box mt="5">
+          <DataTable
+            columns={columns}
+            data={filteredItems}
+            pagination
+            paginationResetDefaultPage={resetPaginationToggle} // optionally, a hook to reset pagination to page 1
+            subHeader
+            subHeaderComponent={subHeaderComponentMemo}
+            persistTableHead
+            highlightOnHover
+            pointerOnHover
+            theme={useColorMode().colorMode === "dark" ? "dark" : "light"}
+            expandableRows
+            expandableRowsComponent={ExpandedComponent}
+          />
+        </Box>
       </Box>
-    </Box>
+    </Skeleton>
   );
 };
 

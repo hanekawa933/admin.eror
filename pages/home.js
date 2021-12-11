@@ -3,13 +3,7 @@ import Image from "next/image";
 import DashboardLayout from "../layouts/dashboard";
 import {
   Box,
-  Container,
-  Flex,
   Heading,
-  Text,
-  Divider,
-  Span,
-  Link as ChakraLink,
   useColorMode,
   Stat,
   StatLabel,
@@ -18,6 +12,7 @@ import {
   StatArrow,
   StatGroup,
   Grid,
+  Skeleton,
 } from "@chakra-ui/react";
 import path from "../constant.default";
 import { useEffect, useContext, useState } from "react";
@@ -32,11 +27,14 @@ function Home() {
   const router = useRouter();
   const [settings, setSettings] = useContext(TempContext);
   const [report, setReport] = useState([]);
+  const [loadingUser, setLoadingUser] = useState(false);
+  const [loadingReport, setLoadingReport] = useState(false);
 
   const fetchUserLogin = async () => {
     try {
       const result = await instance.get("/SuperAdmin/profile");
       setSettings({ ...settings, userLogin: result.data.data });
+      setLoadingUser(true);
     } catch (error) {
       router.push("/");
     }
@@ -46,6 +44,7 @@ function Home() {
     try {
       const result = await instance.get("/laporan/sum_laporan");
       setReport(result.data.data);
+      setLoadingReport(true);
     } catch (error) {
       router.push("/");
     }
@@ -195,18 +194,22 @@ function Home() {
       </Head>
       <DashboardLayout>
         <Box px="5" py="10">
-          <Box p="8" borderRadius="lg" boxShadow="lg">
-            <Heading>Statistik Aplikasi</Heading>
-            <Grid gridTemplateColumns={gridResponsive} gap="6" mt="5">
-              {stats}
-            </Grid>
-          </Box>
-          <Box p="8" borderRadius="lg" boxShadow="lg" mt="10">
-            <Heading>Statistik Laporan</Heading>
-            <Grid gridTemplateColumns={gridResponsive2} gap="6" mt="5">
-              {statsReport}
-            </Grid>
-          </Box>
+          <Skeleton isLoaded={loadingUser && loadingReport}>
+            <Box p="8" borderRadius="lg" boxShadow="lg">
+              <Heading>Statistik Aplikasi</Heading>
+              <Grid gridTemplateColumns={gridResponsive} gap="6" mt="5">
+                {stats}
+              </Grid>
+            </Box>
+          </Skeleton>
+          <Skeleton isLoaded={loadingUser && loadingReport}>
+            <Box p="8" borderRadius="lg" boxShadow="lg" mt="10">
+              <Heading>Statistik Laporan</Heading>
+              <Grid gridTemplateColumns={gridResponsive2} gap="6" mt="5">
+                {statsReport}
+              </Grid>
+            </Box>
+          </Skeleton>
         </Box>
       </DashboardLayout>
     </div>

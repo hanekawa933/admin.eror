@@ -20,6 +20,7 @@ import {
   Select,
   useColorMode,
   useToast,
+  Skeleton,
 } from "@chakra-ui/react";
 import DataTable from "react-data-table-component";
 import { darkTheme, lightTheme } from "../styles/tableTheme";
