@@ -261,7 +261,7 @@ const TableUserAccount = () => {
       item.lokasi.toLowerCase().includes(filterText.toLowerCase()) ||
       item.jenis_kerusakan.toLowerCase().includes(filterText.toLowerCase()) ||
       item.keterangan.toLowerCase().includes(filterText.toLowerCase()) ||
-      item.report_kategori.toLowerCase().includes(filterText.toLowerCase())
+      item.kategori.toLowerCase().includes(filterText.toLowerCase())
     ) {
       return true;
     }
