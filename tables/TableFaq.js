@@ -85,7 +85,7 @@ const TableFaq = () => {
     });
   });
 
-  const updateFaq = (ids, values) => {
+  const updateFaq = async (ids, values) => {
     try {
       const config = {
         headers: {
@@ -95,11 +95,26 @@ const TableFaq = () => {
 
       const body = JSON.stringify(values);
 
-      const result = instance.put(`/faq/update/id/${ids}`, body, config);
+      const result = await instance.put(`/faq/update/id/${ids}`, body, config);
+      toast({
+        title: "Berhasil",
+        description: "Data berhasil diupdate.",
+        status: "success",
+        duration: 2000,
+        position: "top",
+      });
       setIds("");
       fetchFaq();
     } catch (error) {
-      alert(error);
+      toast({
+        title: "Gagal",
+        description: error.response
+          ? error.response.data.message
+          : "Server Error",
+        status: "error",
+        duration: 2000,
+        position: "top",
+      });
     }
   };
 
@@ -107,10 +122,9 @@ const TableFaq = () => {
     initialValues: initValues,
     validationSchema: Schema,
     onSubmit: async (values, { resetForm, setSubmitting }) => {
-      updateFaq(ids, values);
+      await updateFaq(ids, values);
       resetForm({});
       onClose();
-      setSubmitting(false);
     },
     enableReinitialize: true,
   });

@@ -99,10 +99,11 @@ const TableUserAccount = () => {
       lokasi: result.lokasi,
       keterangan: result.keterangan,
       kategori_id: result.kategori_id,
+      status_id: result.status_id,
     });
   });
 
-  const updateReport = (ids, values) => {
+  const updateReport = async (ids, values) => {
     try {
       const config = {
         headers: {
@@ -112,11 +113,31 @@ const TableUserAccount = () => {
 
       const body = JSON.stringify(values);
 
-      const result = instance.put(`/laporan/update/id/${ids}`, body, config);
+      const result = await instance.put(
+        `/laporan/update/id/${ids}`,
+        body,
+        config
+      );
+
+      toast({
+        title: "Berhasil",
+        description: "Data berhasil diupdate.",
+        status: "success",
+        duration: 2000,
+        position: "top",
+      });
       setIds("");
       fetchReportUserAndCategory();
     } catch (error) {
-      alert(error);
+      toast({
+        title: "Gagal",
+        description: error.response
+          ? error.response.data.message
+          : "Server Error",
+        status: "error",
+        duration: 2000,
+        position: "top",
+      });
     }
   };
 
@@ -124,10 +145,9 @@ const TableUserAccount = () => {
     initialValues: initValues,
     validationSchema: Schema,
     onSubmit: async (values, { resetForm, setSubmitting }) => {
-      updateReport(ids, values);
+      await updateReport(ids, values);
       resetForm({});
       onClose();
-      setSubmitting(false);
     },
     enableReinitialize: true,
   });
@@ -588,6 +608,13 @@ const TableUserAccount = () => {
   const deleteData = async () => {
     try {
       const result = await instance.delete(`/laporan/delete/id/${ids}`);
+      toast({
+        title: "Berhasil",
+        description: "Data berhasil dihapus.",
+        status: "success",
+        duration: 2000,
+        position: "top",
+      });
       toast({
         title: "Berhasil",
         description: "Data berhasil dihapus.",

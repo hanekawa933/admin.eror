@@ -112,12 +112,26 @@ const TableCategory = () => {
         values,
         config
       );
+      toast({
+        title: "Berhasil",
+        description: "Data berhasil diupdate.",
+        status: "success",
+        duration: 2000,
+        position: "top",
+      });
+
       setIds("");
       fetchCategory();
-      console.log(result);
     } catch (error) {
-      alert(error);
-      console.log(error.response);
+      toast({
+        title: "Gagal",
+        description: error.response
+          ? error.response.data.message
+          : "Server Error",
+        status: "error",
+        duration: 2000,
+        position: "top",
+      });
     }
   };
 
@@ -185,10 +199,9 @@ const TableCategory = () => {
       formData.append("nama", values.nama);
       formData.append("kd_kategori", values.kd_kategori);
       formData.append("icon", values.icon);
-      updateKategori(ids, formData);
+      await updateKategori(ids, formData);
       resetForm({});
       onClose();
-      setSubmitting(false);
     },
     enableReinitialize: true,
   });
