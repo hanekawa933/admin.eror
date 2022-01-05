@@ -615,13 +615,6 @@ const TableUserAccount = () => {
         duration: 2000,
         position: "top",
       });
-      toast({
-        title: "Berhasil",
-        description: "Data berhasil dihapus.",
-        status: "success",
-        duration: 2000,
-        position: "top",
-      });
       setIds("");
       fetchReportUserAndCategory();
       setLoading(false);

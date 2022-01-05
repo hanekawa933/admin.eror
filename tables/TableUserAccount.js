@@ -386,13 +386,6 @@ const TableUserAccount = () => {
       fetchUserData();
       setLoading(false);
       onCloseDeleteModal();
-      toast({
-        title: "Berhasil",
-        description: "Data berhasil dihapus.",
-        status: "success",
-        duration: 2000,
-        position: "top",
-      });
     } catch (error) {
       toast({
         title: "Gagal",
